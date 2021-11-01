@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Dish } from '../shared/dish';
-import { DISHES } from '../shared/dishes';
+
 import { DishService } from '../services/dish.service';
 
 @Component({
@@ -10,9 +10,9 @@ import { DishService } from '../services/dish.service';
 })
 export class MenuComponent implements OnInit {
  
-  dishes = DISHES;
+  dishes?:Dish[];
 
-  selectedDish = DISHES[0];
+  selectedDish ?: Dish;
 
   constructor(private dishService: DishService) { }
 
