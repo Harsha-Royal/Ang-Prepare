@@ -6,41 +6,76 @@
     fxLayoutGap="10px" 
     fxLayoutGap.xs="0">
 
-  <div fxFlex="40" >
+  <div fxFlex="40" *ngIf="dish" >
     <div fxFlex >
-        <mat-card *ngIf="dish" >
+        <mat-card >
           <mat-card-header>
             <mat-card-title>
               <h3>{{dish.name | uppercase}}</h3>
             </mat-card-title>
           </mat-card-header>
-          <img mat-card-image src={{dish.image}} alt={{dish.name}}>
+          <img mat-card-image src="{{BaseURL + dish.image }}" alt={{dish.name}}>
           <mat-card-content>
             <p>{{dish.description}}
             </p>
           </mat-card-content>
           <mat-card-actions>
+            <button mat-button [routerLink]="['/dishdetail', prev]"><span class="fa fa-chevron-left fa-lg"></span></button>
             <button mat-button (click)="goBack()">BACK</button>
             <button mat-button>LIKE</button>
             <button mat-button>SHARE</button>
+            <span class="flex-spacer"></span>
+            <button mat-button [routerLink]="['/dishdetail', next]"><span class="fa fa-chevron-right fa-lg"></span></button>
           </mat-card-actions>
         </mat-card>
       </div>
     
   </div>
 
+  <div [hidden]="dish || errMess">
+    <mat-spinner></mat-spinner><h4>Loading . . . Please Wait</h4>
+  </div>
+
   <div fxFlex="40" > 
-    <div fxFlex >  
-        <mat-list  *ngIf="dish" >  
+    <div fxFlex>  
+        <mat-list *ngIf="dish">  
             <h2>Comments</h2>     
             <mat-list-item *ngFor="let d of dish.comments">         
             <div mat-line>{{d.comment}}</div>
             <div mat-line> {{d.rating}} stars</div>
             <div mat-line>--{{d.author}} {{d.date | date}}</div>
             </mat-list-item>    
-        </mat-list>
-        
-    </div>  
+        </mat-list> 
+      <div *ngIf="dish"  class="form-size" >
+     <div *ngIf=reviewForm.valid>
+      {{userDet.author}}<br>
+      {{userDet.rating }} stars<br>
+      {{userDet.comment}}
+    </div>
+      <form novalidate [formGroup]="reviewForm" #rform="ngForm" (ngSubmit)="onSubmit()" >
+      <p>
+      <mat-form-field class="full-width" >
+          <input matInput [(ngModel)]="userDet.author" formControlName="author" placeholder="Name" type="text" required>
+          <mat-error *ngIf="formErrors.name">{{formErrors.name}}</mat-error>
+      </mat-form-field>
+      </p>
+    
+      <mat-slider  [(ngModel)]="userDet.rating" tickInterval="1" formControlName="rating" min="1" max="5" step="1" value="5"></mat-slider>
+      <p>
+      <mat-form-field  class="full-width" >
+        <mat-label>Leave a comment</mat-label>
+        <textarea matInput type="text" [(ngModel)]="userDet.comment" formControlName="comment"   required></textarea>
+        <mat-error *ngIf="formErrors.name">{{formErrors.name}}</mat-error>
+      </mat-form-field>
+       </p>
+       <button type="submit"  [disabled]="!rform.valid" mat-button class="background-primary text-floral-white">Submit</button>
+  </form>
   </div>
-
+   
+      </div> 
+    </div>
+    <div fxFlex *ngIf="errMess">
+      <h2>Error</h2>
+      <h4>{{errMess}}</h4>
+    </div>
 </div>
